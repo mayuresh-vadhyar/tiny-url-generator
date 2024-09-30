@@ -2,11 +2,40 @@
 const { Logger } = require('./logger');
 const path = ['alias-map'];
 
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(aliasEntry) {
+        this.heap.push(aliasEntry);
+        this.bubbleUp(this.heap.length - 1);
+    }
+
+    bubbleUp(index) {
+        while (index > 0) {
+            let parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[parentIndex].expireAt <= this.heap[index].expireAt) {
+                break;
+            }
+
+            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
+        }
+    }
+
+    peek() {
+        return this.heap.length === 0 ? null : this.heap[0];
+    }
+}
+
+
 class AliasMap {
 
     constructor() {
         Logger.log(path, 'Creating alias map');
         this.active = new Map();
+        this.expiryHeap = new MinHeap();
     }
 
     getAlias(key) {
