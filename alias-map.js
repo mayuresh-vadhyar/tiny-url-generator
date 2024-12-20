@@ -91,8 +91,15 @@ class AliasMap {
         if (alias.constructor.name !== 'Alias') {
             throw new Error('Incompatible type for alias');
         }
+
+        const currentTime = Date.now();
+        const expireAt = currentTime + alias.ttl_seconds * 1000;
+
         this.active.set(alias.custom_alias, alias);
-        setTimeout(() => alias.expire(), alias.ttl_seconds * 1000);
+        // setTimeout(() => alias.expire(), alias.ttl_seconds * 1000);
+        this.expiryHeap.insert({ alias: alias.custom_alias, expireAt });
+        Logger.log(path, `Alias added: ${alias.custom_alias} with TTL: ${alias.ttl_seconds}s`);
+
         return alias.custom_alias;
     }
 
