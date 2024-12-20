@@ -1,5 +1,6 @@
 'use strict';
 const { Logger } = require('./logger');
+const constants = require('./constants');
 const path = ['alias-map'];
 
 class MinHeap {
@@ -77,6 +78,7 @@ class AliasMap {
         Logger.log(path, 'Creating alias map');
         this.active = new Map();
         this.expiryHeap = new MinHeap();
+        this.runExpiryWorker()
     }
 
     getAlias(key) {
@@ -107,6 +109,22 @@ class AliasMap {
         Logger.log(path, 'Deleting Alias - ', customAlias)
         this.active.delete(customAlias);
         return true;
+    }
+
+    runExpiryWorker() {
+        setInterval(() => {
+            const currentTime = Date.now();
+            let nextToExpire = this.expiryHeap.peek();
+
+            while (nextToExpire && nextToExpire.expireAt <= currentTime) {
+                // Remove expired alias
+                this.expiryHeap.extractMin();
+                this.expireAlias(nextToExpire.alias);
+                Logger.log(['alias-map'], `Alias ${nextToExpire.alias} expired`);
+                nextToExpire = this.expiryHeap.peek();
+            }
+
+        }, constants.EXPIRY_CHECK_INTERVAL);
     }
 
 }

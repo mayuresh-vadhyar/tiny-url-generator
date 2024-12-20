@@ -37,20 +37,22 @@ class Alias {
         return this.long_url;
     }
 
-    expire() {
-        const aliasMap = AliasMap.getAliasMap();
-        if(!aliasMap.has(this.custom_alias)) {
-            throw new Error('Alias does not exist or has expired');
-        }
-        aliasMap.expireAlias(this.custom_alias);
-    }
-
-    isExpired() {
-        const currentTime = new Date().getTime();
-        const createdTime = this.created.getTime();
-        const diff = (currentTime - createdTime) / 1000;
-        return diff > this.ttl_seconds;
-    }
+    /*
+     * expire() {
+     *     const aliasMap = AliasMap.getAliasMap();
+     *     if(!aliasMap.has(this.custom_alias)) {
+     *         throw new Error('Alias does not exist or has expired');
+     *     }
+     *     aliasMap.expireAlias(this.custom_alias);
+     * }
+    
+     * isExpired() {
+     *     const currentTime = new Date().getTime();
+     *     const createdTime = this.created.getTime();
+     *     const diff = (currentTime - createdTime) / 1000;
+     *     return diff > this.ttl_seconds;
+     * }
+     */
 
     incrementAccessCount() {
         return ++this.access_count;
