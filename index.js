@@ -1,8 +1,8 @@
 'use strict';
 const process = require('process');
 const express = require('express');
-const constants = require('./constants');
-const aliasShortener = require('./alias-shortener')
+const constants = require('./utils/constants');
+const aliasController = require('./controllers/alias-controller')
 
 const app = express();
 const port = process.env.PORT || constants.port;
@@ -24,15 +24,15 @@ function isValidUrl(url) {
     }
 }
 
-app.post('/shorten', aliasShortener.shortenUrl);
+app.post('/shorten', aliasController.shortenUrl);
 
-app.get('/:alias', aliasShortener.redirectToAlias);
+app.get('/:alias', aliasController.redirectToAlias);
 
-app.get('/analytics/:alias', aliasShortener.getAliasAnalytics);
+app.get('/analytics/:alias', aliasController.getAliasAnalytics);
 
-app.put('/update/:alias', aliasShortener.updateAlias);
+app.put('/update/:alias', aliasController.updateAlias);
 
-app.delete('/delete/:alias', aliasShortener.deleteAlias);
+app.delete('/delete/:alias', aliasController.deleteAlias);
 
 
 app.use((err, req, res, next) => {
