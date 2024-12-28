@@ -2,7 +2,7 @@
 const uuid = require("uuid");
 const constants = require('../utils/constants');
 const { Logger } = require('../utils/logger');
-const { AliasMap } = require('./alias-map');
+const { AliasGenerator } = require('./alias-generator');
 const filePath = ['alias'];
 
 class Alias {
@@ -15,22 +15,24 @@ class Alias {
 
     constructor(longUrl, customAlias, ttl) {
         this.long_url = longUrl;
-        this.custom_alias = customAlias ?? this.generateCustomAlias();
+        this.custom_alias = customAlias ?? AliasGenerator.generateAlias();
         this.ttl_seconds = ttl ?? constants.defaultTTL;
         this.created = new Date();
         Logger.log(filePath, 'Created Alias', this.custom_alias, 'at', this.created.toISOString());
     }
 
-    generateCustomAlias() {
-        const randomId = uuid.v4().split('-')[0];
-        Logger.log(filePath, 'Custom alias generated', randomId);
-        const aliasMap = AliasMap.getAliasMap().active;
-        if (aliasMap.has(randomId)) {
-            Logger.error(filePath, 'Custom alias already exists');
-            return generateCustomAlias();
-        }
-        return randomId;
-    }
+    /*
+     * generateCustomAlias() {
+     *     const randomId = uuid.v4().split('-')[0];
+     *     Logger.log(filePath, 'Custom alias generated', randomId);
+     *     const aliasMap = AliasMap.getAliasMap().active;
+     *     if (aliasMap.has(randomId)) {
+     *         Logger.error(filePath, 'Custom alias already exists');
+     *         return generateCustomAlias();
+     *     }
+     *     return randomId;
+     * }
+     */
 
     getUrl() {
         this.logAliasAccess();
