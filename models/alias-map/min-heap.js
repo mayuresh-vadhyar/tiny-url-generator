@@ -1,6 +1,4 @@
 'use strict';
-const constants = require('../../utils/constants');
-const path = ['min-heap'];
 
 class MinHeap {
     constructor() {
